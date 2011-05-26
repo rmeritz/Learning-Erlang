@@ -1,6 +1,6 @@
 -module(my_db).
 -export([start/0,stop/0,write/2,delete/1,read/1,match/1]).
-
+-export([code_upgrade/0]).
 -export([init/0]).
 
 start() ->
@@ -37,6 +37,10 @@ reply(Pid, Msg) ->
 
 loop(DB) ->
     receive
+	{request, Pid, upgrade} ->
+	    NewDB = db:code_upgrade(DB),
+	    reply(Pid, ok),
+	    loop(NewDB);
 	{request, Pid, destroy} ->
 	    db:destory(DB),
 	    reply(Pid, ok);
@@ -57,3 +61,6 @@ loop(DB) ->
 	    reply(Pid, Reply), 
 	    loop(DB)
     end.
+
+code_upgrade() ->
+    call(upgrade).

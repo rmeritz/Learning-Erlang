@@ -1,1 +1,4 @@
 *.beam
+*.erl~
+.gitignore
+.erl~~
